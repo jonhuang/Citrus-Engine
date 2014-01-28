@@ -273,7 +273,7 @@ package citrus.core {
 		}
 		
 		/**
-		 * called when CitrusEngine is added to the stage and ready to run.
+		 * Called when CitrusEngine is added to the stage and ready to run.
 		 */
 		public function initialize():void {
 		}
@@ -446,6 +446,8 @@ package citrus.core {
 				stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 			else
 				stage.displayState = StageDisplayState.NORMAL;
+			
+			resetScreenSize();
 		}
 		
 		public function get screenWidth():int
