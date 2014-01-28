@@ -1,22 +1,6 @@
 package citrus.view.spriteview 
 {
 
-	import citrus.core.CitrusEngine;
-	import citrus.core.CitrusObject;
-	import citrus.core.IState;
-	import citrus.physics.APhysicsEngine;
-	import citrus.physics.IDebugView;
-	import citrus.system.components.ViewComponent;
-	import citrus.view.ACitrusCamera;
-	import citrus.view.ACitrusView;
-	import citrus.view.ICitrusArt;
-	import citrus.view.ISpriteView;
-	import flash.utils.Dictionary;
-	import org.osflash.signals.Signal;
-
-	import dragonBones.Armature;
-	import dragonBones.animation.WorldClock;
-
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.FrameLabel;
@@ -28,7 +12,25 @@ package citrus.view.spriteview
 	import flash.net.URLRequest;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
+	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
+	
+	import citrus.core.CitrusEngine;
+	import citrus.core.CitrusObject;
+	import citrus.core.IState;
+	import citrus.objects.APhysicsObject;
+	import citrus.physics.APhysicsEngine;
+	import citrus.physics.IDebugView;
+	import citrus.system.components.ViewComponent;
+	import citrus.view.ACitrusCamera;
+	import citrus.view.ACitrusView;
+	import citrus.view.ICitrusArt;
+	import citrus.view.ISpriteView;
+	
+	import dragonBones.Armature;
+	import dragonBones.animation.WorldClock;
+	
+	import org.osflash.signals.Signal;
 
 	/**
 	 * This is the class that all art objects use for the SpriteView state view. If you are using the SpriteView (as opposed to the blitting view, for instance),
@@ -133,13 +135,32 @@ package citrus.view.spriteview
 		
 		public function moveRegistrationPoint(registrationPoint:String):void {
 			
-			if (registrationPoint == "topLeft") {
-				_content.x = 0;
-				_content.y = 0;
-			} else if (registrationPoint == "center") {
+			// jonhack
+			//  I want all physics objects to be centered
+			// since I'm moving the physics body down instead.
+			if (citrusObject is APhysicsObject) {
 				_content.x = -_content.width / 2;
 				_content.y = -_content.height / 2;
 			}
+			else {
+				// for CitrusSprites
+//				if (registrationPoint === "center") {
+					_content.x = 0;
+					_content.y = 0;
+//				} else {
+//					_content.x = -_content.width / 2;
+//					_content.y = -_content.height / 2;
+//				}
+			}
+			
+			
+//			if (registrationPoint == "topLeft") {
+//				_content.x = 0;
+//				_content.y = 0;
+//			} else if (registrationPoint == "center") {
+//				_content.x = -_content.width / 2;
+//				_content.y = -_content.height / 2;
+//			}
 			
 		}
 		

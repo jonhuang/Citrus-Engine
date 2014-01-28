@@ -1,9 +1,10 @@
 package citrus.objects {
 
+	import citrus.physics.PhysicsCollisionCategories;
 	import citrus.physics.nape.INapePhysicsObject;
 	import citrus.physics.nape.Nape;
-	import citrus.physics.PhysicsCollisionCategories;
 	import citrus.view.ISpriteView;
+	
 	import nape.callbacks.CbType;
 	import nape.callbacks.InteractionCallback;
 	import nape.callbacks.PreCallback;
@@ -56,6 +57,12 @@ package citrus.objects {
 			
 			super(name, params);
 		}
+		
+		// jon hack
+//		public function get material():Material {
+//			return _material;
+//		}
+		
 			
 		/**
 		 * All your init physics code must be added in this method, no physics code into the constructor. It's automatically called when the object is added to the state.
@@ -119,7 +126,10 @@ package citrus.objects {
 		 */
 		protected function createBody():void {
 			
-			_body = new Body(_bodyType, new Vec2(_x, _y));
+			// jonhack to fix the topLeft registration by moving the body
+			var pos:Vec2 = (registration === 'topLeft') ? Vec2.weak(_x + _width/2, _y + _height/2) : Vec2.weak(_x, _y);
+			
+			_body = new Body(_bodyType, pos);
 			_body.userData.myData = this;
 			
 			_body.rotate(new Vec2(_x, _y), _rotation);
@@ -168,12 +178,16 @@ package citrus.objects {
 				
 			} else {
 			
-				if (_radius != 0)
+				if (_radius != 0) {
+					
 					_shape = new Circle(_radius, null, _material);
-				else
+				
+				}
+				else {
 					_shape = new Polygon(Polygon.box(_width, _height), _material);
+					
+				}
 			}
-			
 			_body.shapes.add(_shape);
 		}
 		

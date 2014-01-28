@@ -66,6 +66,9 @@ package citrus.utils.objectmakers {
 				if (child) {
 					if (!child.className)
 						continue;
+					
+					//jonhack freeze MC to first frame
+					child.gotoAndStop(1);
 
 					var objectClass:Class = getDefinitionByName(child.className) as Class;
 					var params:Object = {};
@@ -79,9 +82,11 @@ package citrus.utils.objectmakers {
 					// We need to unrotate the object to get its true width/height. Then rotate it back.
 					var rotation:Number = child.rotation;
 					child.rotation = 0;
-					params.width = child.width;
-					params.height = child.height;
-					child.rotation = rotation;
+					
+					// jonhack allow manual override
+					params.width = params.width || child.width;
+					params.height = params.height || child.height;
+					child.rotation = params.rotation || rotation;
 
 					params.rotation = child.rotation;
 
