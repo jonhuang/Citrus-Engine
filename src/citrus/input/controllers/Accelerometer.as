@@ -173,6 +173,8 @@ package citrus.input.controllers
 			_rot.y = Math.atan2(_a.x, _a.z) + offsetYAngle;
 			_rot.z = Math.atan2(_a.x, _a.y) + offsetZAngle;
 			
+			//trace("RAW:",_a.x, "ROT:",_rot.x, "VEL:", (_rot.x - _prevRot.x) * _ce.stage.frameRate);
+			
 			if (triggerRawValues)
 			{
 				triggerCHANGE(RAW_X, _a.x);
@@ -214,6 +216,8 @@ package citrus.input.controllers
 		 * 
 		 * this was mostly tested on a fixed landscape orientation setting.
 		 */
+		
+		// JON swapped from rot to raw numbers
 		protected function customActions():void
 		{
 			if (!actions)
@@ -223,11 +227,10 @@ package citrus.input.controllers
 				actions["right"] = false;
 				actions["down"] = false;
 				actions["up"] = false;
-				actions["jump"] = false;
 			}
 			
 			//in idle position on Z
-			if (_rot.z < idleAngleZ && _rot.z > - idleAngleZ)
+			if (_a.x < idleAngleX && _a.x > - idleAngleX)
 			{
 				if (actions.left)
 				{
@@ -243,34 +246,33 @@ package citrus.input.controllers
 			else
 			{
 				//going right
-				if (_rot.z < 0 && _rot.z > -Math.PI/2)
+				if (_a.x < 0 )
 				{
 					if (!actions.right)
 					{
 						triggerON("right", 1);
+						triggerOFF("left", 0);
+						actions.left = false;
 						actions.right = true;
 					}
 				}
 				
 				//going left
-				if (_rot.z > 0 && _rot.z < Math.PI / 2)
+				if (_a.x > 0 )
 				{
 					if (!actions.left)
 					{
 						triggerON("left", 1);
+						triggerOFF("right", 0);
+						actions.right = false;
 						actions.left = true;
 					}
 				}
 			}
 			
 			//in idle position on X
-			if (_rot.x < idleAngleX && _rot.x > - idleAngleX)
+			if (_a.y < idleAngleZ && _a.y > - idleAngleZ)
 			{
-				if (actions.jump)
-				{
-					triggerOFF("jump", 0);
-					actions.jump = false;
-				}
 				if (actions.up)
 				{
 					triggerOFF("up", 0);
@@ -285,26 +287,23 @@ package citrus.input.controllers
 			else
 			{
 				//going up
-				if (_rot.x < 0 && _rot.x > -Math.PI/2)
+				if (_a.y < 0 )
 				{
-					if (!actions.jump)
-					{
-						triggerON("jump", 1);
-						actions.jump = true;
-					}
 					if (!actions.up)
 					{
 						triggerON("up", 1);
+						triggerOFF("down", 0);
 						actions.up = true;
 					}
 				}
 				
 				//going down
-				if (_rot.x > 0 && _rot.x < Math.PI / 2)
+				if (_a.y > 0 )
 				{
 					if (!actions.down)
 					{
 						triggerON("down", 1);
+						triggerOFF("up", 0);
 						actions.down = true;
 					}
 				}

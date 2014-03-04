@@ -58,11 +58,6 @@ package citrus.objects {
 			super(name, params);
 		}
 		
-		// jon hack
-//		public function get material():Material {
-//			return _material;
-//		}
-		
 			
 		/**
 		 * All your init physics code must be added in this method, no physics code into the constructor. It's automatically called when the object is added to the state.

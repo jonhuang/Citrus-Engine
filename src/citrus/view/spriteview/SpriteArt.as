@@ -103,6 +103,19 @@ package citrus.view.spriteview
 			}
 		}
 		
+		
+		/**
+		 * JON
+		 * Remove a loop animation to the Dictionnary.
+		 * @param tab an array with all the loop animation names.
+		 */
+		static public function removeLoopAnimations(tab:Array):void {
+
+			for each (var animation:String in tab) {
+				_loopAnimation[animation] = false;
+			}
+		}
+		
 		/**
 		 * The content property is the actual display object that your game object is using. For graphics that are loaded at runtime
 		 * (not embedded), the content property will not be available immediately. You can listen to the COMPLETE event on the loader
