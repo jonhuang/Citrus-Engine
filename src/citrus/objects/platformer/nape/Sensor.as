@@ -1,11 +1,13 @@
 package citrus.objects.platformer.nape {
 
 	import citrus.objects.NapePhysicsObject;
-
+	import citrus.physics.PhysicsCollisionCategories;
+	
 	import nape.callbacks.CbType;
 	import nape.callbacks.InteractionCallback;
+	import nape.dynamics.InteractionFilter;
 	import nape.phys.BodyType;
-
+	
 	import org.osflash.signals.Signal;
 
 	/**
@@ -70,8 +72,9 @@ package citrus.objects.platformer.nape {
 			
 		override protected function createFilter():void {
 			
-			super.createFilter();
-			
+			//super.createFilter();
+			// JON changing default sensor type from "Level"
+			_body.setShapeFilters(new InteractionFilter(PhysicsCollisionCategories.Get("sensors"), PhysicsCollisionCategories.GetAll()));
 			_shape.sensorEnabled = true;
 		}
 		
