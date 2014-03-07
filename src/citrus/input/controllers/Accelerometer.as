@@ -1,12 +1,12 @@
 package citrus.input.controllers 
 {
 
-	import citrus.input.InputController;
-
 	import flash.events.AccelerometerEvent;
 	import flash.geom.Vector3D;
 	import flash.sensors.Accelerometer;
 	import flash.utils.Dictionary;
+	
+	import citrus.input.InputController;
 	
 	public class Accelerometer extends InputController
 	{
@@ -116,7 +116,7 @@ package citrus.input.controllers
 		/**
 		 * if true, on each update values will be computed to send custom Actions (such as left right up down by default)
 		 */
-		public var triggerActions:Boolean = false;
+		public var _triggerActions:Boolean = false;
 		
 		/**
 		 * if true, on each update values will be computed to send the angular velocity of the device
@@ -196,7 +196,7 @@ package citrus.input.controllers
 				triggerCHANGE(VEL_Z, (_rot.z - _prevRot.z) * _ce.stage.frameRate);
 			}
 			
-			if (triggerActions)
+			if (_triggerActions)
 				customActions();
 				
 			_prevRot.x = _rot.x;
@@ -204,6 +204,29 @@ package citrus.input.controllers
 			_prevRot.z = _rot.z;
 			
 		}
+		
+		public function get triggerActions():Boolean {
+			return _triggerActions;
+		}
+		
+		public function set triggerActions(enabled:Boolean):void {
+			_triggerActions = enabled;
+			
+			// bugfix: stuck accelerometer while changing modes while "LEft" or "Right" actions is being dispatched.
+			if (actions){
+				actions["left"] = false;
+				actions["right"] = false;
+				actions["down"] = false;
+				actions["up"] = false;
+				triggerOFF("left", 0);
+				triggerOFF("right", 0);
+				triggerOFF("up", 0);
+				triggerOFF("down", 0);
+			}
+			
+		}
+		
+		
 		
 		/**
 		 * Override this function to customize actions based on orientation
