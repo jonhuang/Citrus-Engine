@@ -1,8 +1,8 @@
 package dragonBones.utils
 {
-	import dragonBones.objects.DBTransform;
-	
 	import flash.geom.Matrix;
+	
+	import dragonBones.objects.DBTransform;
 	
 	/** @private */
 	final public class TransformUtil
