@@ -1,12 +1,13 @@
 package citrus.sounds 
 {
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	
 	import citrus.core.CitrusObject;
 	import citrus.view.ACitrusCamera;
 	import citrus.view.ICitrusArt;
 	import citrus.view.ISpriteView;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	/**
 	 * Experimental spatial sound system
@@ -26,6 +27,13 @@ package citrus.sounds
 		
 		public var drawRadius:Boolean = false;
 		public var drawObject:Boolean = true;
+		
+		// jon: to fix error
+		public function get art():ICitrusArt {
+			throw new Error("CitrusSoundSpace::art() not implemented");
+			return null;
+		};
+		
 		
 		public function CitrusSoundSpace(name:String, params:Object = null) { 
 			
