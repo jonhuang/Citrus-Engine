@@ -34,13 +34,19 @@ package citrus.view.spriteview {
 		{
 			return _viewRoot;
 		}
+		
+		override public function destroy():void
+		{
+			_viewRoot.removeChildren();
+			if (_viewRoot.parent)
+				_viewRoot.parent.removeChild(_viewRoot);
+			_viewRoot = null;
+			super.destroy();
+		}
 			
 		override public function update(timeDelta:Number):void
 		{
 			super.update(timeDelta);
-			
-			if(camera.enabled)
-				camera.update();
 			
 			//Update art positions
 			for each (var sprite:SpriteArt in _viewObjects)
@@ -53,6 +59,9 @@ package citrus.view.spriteview {
 			}
 			
 			WorldClock.clock.advanceTime(timeDelta);
+			
+			if (camera.enabled)
+				camera.update();
 		}
 			
 		override protected function createArt(citrusObject:Object):Object

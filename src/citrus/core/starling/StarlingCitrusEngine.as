@@ -2,7 +2,6 @@ package citrus.core.starling {
 
 	import citrus.core.CitrusEngine;
 	import citrus.core.State;
-	import citrus.utils.Mobile;
 
 	import starling.core.Starling;
 	import starling.events.Event;
@@ -59,6 +58,7 @@ package citrus.core.starling {
 			if (_state) {
 
 				if (_starling) {
+					_starling.stage.removeEventListener(starling.events.Event.RESIZE, handleStarlingStageResize);
 					_starling.stage.removeChild(_state as StarlingState);
 					_starling.root.dispose();
 					_starling.dispose();
@@ -86,8 +86,7 @@ package citrus.core.starling {
 		 */
 		public function setUpStarling(debugMode:Boolean = false, antiAliasing:uint = 1, viewPort:Rectangle = null, stage3D:Stage3D = null):void {
 
-			if (Mobile.isAndroid())
-				Starling.handleLostContext = true;
+			Starling.handleLostContext = true;
 				
 			if (viewPort)
 				_viewport = viewPort;
@@ -95,7 +94,14 @@ package citrus.core.starling {
 			_starling = new Starling(RootClass, stage, null, stage3D, "auto", _context3DProfiles);
 			_starling.antiAliasing = antiAliasing;
 			_starling.showStats = debugMode;
-			_starling.addEventListener(starling.events.Event.CONTEXT3D_CREATE, _context3DCreated);			
+			_starling.addEventListener(starling.events.Event.CONTEXT3D_CREATE, _context3DCreated);
+			_starling.stage.addEventListener(starling.events.Event.RESIZE, handleStarlingStageResize);
+		}
+
+		protected function handleStarlingStageResize(evt:starling.events.Event):void {
+			
+			resetScreenSize();
+			onStageResize.dispatch(_screenWidth, _screenHeight);
 		}
 		
 		/**
@@ -109,12 +115,13 @@ package citrus.core.starling {
 		{
 			var arr:Array = assetSizes;
 			arr.sort(Array.NUMERIC);
-			var scaleF:Number = Math.floor(starling.contentScaleFactor * 10) / 10;
+			var scaleF:Number = Math.floor(starling.contentScaleFactor * 1000) / 1000;
 			var closest:Number;
 			var f:Number;
 			for each (f in arr)
 				if (!closest || Math.abs(f - scaleF) < Math.abs(closest - scaleF))
 					closest = f;
+			
 			return closest;
 		}
 		
@@ -206,6 +213,14 @@ package citrus.core.starling {
 			
 			resetViewport();
 			_starling.viewPort.copyFrom(_viewport);
+			
+			setupStats();
+		}
+		
+		public function setupStats(hAlign:String = "left",vAlign:String = "top",scale:Number = 1):void
+		{
+			if(_starling && _starling.showStats)
+					_starling.showStatsAt(hAlign, vAlign,scale/_starling.contentScaleFactor);
 		}
 
 		/**
@@ -220,11 +235,17 @@ package citrus.core.starling {
 			if (!_starling.isStarted)
 				_starling.start();
 				
-			_starling.addEventListener(starling.events.Event.ROOT_CREATED, function():void
-			{
-				_starling.removeEventListener(starling.events.Event.ROOT_CREATED, arguments.callee);
-				handleStarlingReady();
-			});
+			_starling.addEventListener(starling.events.Event.ROOT_CREATED, _starlingRootCreated);
+		}
+		
+		protected function _starlingRootCreated(evt:starling.events.Event):void {
+			
+			_starling.removeEventListener(starling.events.Event.ROOT_CREATED, _starlingRootCreated);
+				
+			stage.removeEventListener(flash.events.Event.RESIZE, handleStageResize);
+			
+			handleStarlingReady();
+			setupStats();
 		}
 		
 		/**
@@ -296,6 +317,8 @@ package citrus.core.starling {
 		
 		/**
 		 * @inheritDoc
+		 * We stop Starling. Be careful, if you use AdMob you will need to override this function and set Starling stop to <code>true</code>!
+		 * If you encounter issues with AdMob, you may override <code>handleStageDeactivated</code> and <code>handleStageActivated</code> and use <code>NativeApplication.nativeApplication</code> instead.
 		 */
 		override protected function handleStageDeactivated(e:flash.events.Event):void {
 
@@ -307,6 +330,7 @@ package citrus.core.starling {
 		
 		/**
 		 * @inheritDoc
+		 * We start Starling.
 		 */
 		override protected function handleStageActivated(e:flash.events.Event):void {
 
@@ -321,9 +345,23 @@ package citrus.core.starling {
 			return _baseWidth;
 		}
 		
+		public function set baseWidth(value:int):void {
+			
+			_baseWidth = value;
+			
+			resetViewport();
+		}
+		
 		public function get baseHeight():int
 		{
 			return _baseHeight;
+		}
+		
+		public function set baseHeight(value:int):void {
+			
+			_baseHeight = value;
+			
+			resetViewport();
 		}
 		
 		public function get juggler():CitrusStarlingJuggler

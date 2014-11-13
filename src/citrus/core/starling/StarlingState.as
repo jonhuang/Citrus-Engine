@@ -35,7 +35,7 @@ package citrus.core.starling {
 			if (!(_ce as StarlingCitrusEngine) || !(_ce as StarlingCitrusEngine).starling)
 				throw new Error("Your Main " + _ce + " class doesn't extend StarlingCitrusEngine, or you didn't call its setUpStarling function");
 
-			_realState = new MediatorState();
+			_realState = new MediatorState(this);
 		}
 
 		/**
@@ -109,6 +109,21 @@ package citrus.core.starling {
 		public function remove(object:CitrusObject):void {
 			_realState.remove(object);
 		}
+		
+		/**
+		 * removeImmediately instaneously destroys and remove the object from the state.
+		 * 
+		 * While using remove() is recommended, there are specific case where this is needed.
+		 * please use with care.
+		 * 
+		 * Warning: 
+		 * - can break box2D if called directly or indirectly in a collision listener.
+		 * - effects unknown with nape.
+		 */
+		public function removeImmediately(object:CitrusObject):void {
+			_realState.removeImmediately(object);
+		}
+
 
 		/**
 		 * Gets a reference to a CitrusObject by passing that object's name in.

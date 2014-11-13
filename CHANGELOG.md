@@ -1,9 +1,14 @@
-V3.1.10, Work In Progress
--------------------------
-- Starling updated on 1.5
+V3.1.11, Work in progress
+------------------------
+- Feathers updated on 2.0
+- Starling.handleLostContext is always set to true
+
+V3.1.10, 09 15 2014
+-------------------
+- Starling updated on 1.5.1
 - DragonBones updated on 3.0
 - Nape updated on 2.0.16
-- Feathers updated 1.3.0
+- Feathers updated 1.3.1
 - Set up SoundMixer.audioPlaybackMode to "ambient" (on iOS if the physical button is off, mute the sound).
 - setUpStarling method has a stage3D argument, useful for shared context.
 - Citrus has its own pausable starling juggler, AnimationSequences will be attached to it by default. When CE is paused, starling keeps running but anything attached to the citrus juggler will be paused as expected.

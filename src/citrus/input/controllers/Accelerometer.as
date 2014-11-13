@@ -107,7 +107,7 @@ package citrus.input.controllers
 		/**
 		 * send the new raw values on each frame.
 		 */
-		public var triggerRawValues:Boolean = false;
+		protected var _triggerRawValues:Boolean = false;
 		/**
 		 * send the new rotation values on each frame in radian.
 		 */
@@ -223,6 +223,20 @@ package citrus.input.controllers
 				triggerOFF("up", 0);
 				triggerOFF("down", 0);
 			}
+			
+		}
+		
+		public function get triggerRawValues():Boolean {
+			return _triggerRawValues;
+		}
+		
+		public function set triggerRawValues(enabled:Boolean):void {
+			_triggerRawValues = enabled;
+			
+			// bugfix: stuck accelerometer while changing modes.
+			triggerOFF(RAW_X, 0);
+			triggerOFF(RAW_Y, 0);
+			triggerOFF(RAW_Z, 0);
 			
 		}
 		

@@ -20,15 +20,22 @@ package citrus.core {
 		private var _objects:Vector.<CitrusObject> = new Vector.<CitrusObject>();
 		private var _poolObjects:Vector.<PoolObject> = new Vector.<PoolObject>();
 		private var _view:ACitrusView;
+		private var _istate:IState;
 
-		public function MediatorState() {
+		public function MediatorState(istate:IState) {
+			_istate = istate;
 		}
 
 		/**
 		 * Called by the Citrus Engine.
 		 */
 		public function destroy():void {
-			// Call destroy on all objects, and remove all art from the stage.
+			
+			for each (var poolObject:PoolObject in _poolObjects)
+				poolObject.destroy();
+
+			_poolObjects.length = 0;
+			
 			var n:uint = _objects.length;
 			for (var i:int = n - 1; i >= 0; --i) {
 				var object:CitrusObject = _objects[i];
@@ -38,12 +45,11 @@ package citrus.core {
 			}
 			_objects.length = 0;
 
-			for each (var poolObject:PoolObject in _poolObjects)
-				poolObject.destroy();
-
-			_poolObjects.length = 0;
-
 			_view.destroy();
+			
+			_objects = null;
+			_poolObjects = null;
+			_view = null;
 		}
 
 		/**
@@ -164,7 +170,7 @@ package citrus.core {
 		public function addPoolObject(poolObject:PoolObject):PoolObject {
 
 			if (poolObject.isCitrusObjectPool) {
-
+				poolObject.citrus_internal::state = _istate;
 				_poolObjects.push(poolObject);
 
 				return poolObject;
@@ -173,11 +179,20 @@ package citrus.core {
 		}
 
 		/**
-		 * When you are ready to remove an object from getting updated, viewed, and generally being existent, call this method.
-		 * Alternatively, you can just set the object's kill property to true. That's all this method does at the moment. 
+		 * removeImmediately instaneously destroys and remove the object from the state.
+		 * 
+		 * While using remove() is recommended, there are specific case where this is needed.
+		 * please use with care.
 		 */
 		public function remove(object:CitrusObject):void {
 			object.kill = true;
+		}
+		
+		public function removeImmediately(object:CitrusObject):void {
+			object.kill = true;
+			_objects.splice(_objects.indexOf(object), 1);
+			object.destroy();
+			_view.removeArt(object);
 		}
 
 		/**

@@ -1,15 +1,13 @@
 package citrus.sounds {
 
 	import aze.motion.eaze;
-	import citrus.events.CitrusEvent;
-	import citrus.events.CitrusSoundEvent;
-	import citrus.events.CitrusEventDispatcher;
 
+	import citrus.events.CitrusEventDispatcher;
+	import citrus.events.CitrusSoundEvent;
 	import citrus.sounds.groups.BGMGroup;
 	import citrus.sounds.groups.SFXGroup;
 	import citrus.sounds.groups.UIGroup;
 
-	import flash.events.EventDispatcher;
 	import flash.media.SoundMixer;
 	import flash.media.SoundTransform;
 	import flash.utils.Dictionary;
@@ -165,22 +163,30 @@ package citrus.sounds {
 		
 		/**
 		 * pauses all playing sounds
+		 * @param except list of sound names to not pause.
 		 */
-		public function pauseAll():void
+		public function pauseAll(...except):void
 		{
-			var s:CitrusSound;
-			for each(s in soundsDic)
-					s.pause();
+			loop1:for each(var cs:CitrusSound in soundsDic) {
+					for each (var soundToPreserve:String in except)
+						if (soundToPreserve == cs.name)
+							continue loop1;
+					cs.pause();
+			}	
 		}
 		
 		/**
 		 * resumes all paused sounds
+		 * @param except list of sound names to not resume.
 		 */
-		public function resumeAll():void
+		public function resumeAll(...except):void
 		{
-			var s:CitrusSound;
-			for each(s in soundsDic)
-					s.resume();
+			loop1:for each(var cs:CitrusSound in soundsDic) {
+					for each (var soundToPreserve:String in except)
+						if (soundToPreserve == cs.name)
+							continue loop1;
+					cs.resume();
+			}	
 		}
 		
 		public function playSound(id:String):CitrusSoundInstance {
@@ -244,20 +250,10 @@ package citrus.sounds {
 		
 		public function removeAllSounds(...except):void {
 			
-			var killSound:Boolean;
-			
-			for each(var cs:CitrusSound in soundsDic) {
-				
-				killSound = true;
-				
-				for each (var soundToPreserve:String in except) {
-
-					if (soundToPreserve == cs.name) {
-						killSound = false;
-						break;
-					}
-				}
-				if (killSound)
+			loop1:for each(var cs:CitrusSound in soundsDic) {
+					for each (var soundToPreserve:String in except)
+						if (soundToPreserve == cs.name)
+							continue loop1;
 					removeSound(cs.name);
 			}
 		}
@@ -316,13 +312,21 @@ package citrus.sounds {
 		}
 		
 		/**
-		 * Cut the SoundMixer. No sound will be heard.
+		 * Mute/unmute Flash' SoundMixer. No sound will be heard but they're still playing.
 		 */
 		public function muteFlashSound(mute:Boolean = true):void {
 			
 			var s:SoundTransform = SoundMixer.soundTransform;
 			s.volume = mute ? 0 : 1;
 			SoundMixer.soundTransform = s;
+		}
+		
+		/**
+		 * Return true if Flash' SoundMixer is muted.
+		 */
+		public function isFlashSoundMuted():Boolean {
+			
+			return SoundMixer.soundTransform.volume == 0;
 		}
 
 		/**
@@ -361,14 +365,10 @@ package citrus.sounds {
 		 */		
 		public function stopAllPlayingSounds(...except):void {
 			
-			var killSound:Boolean;
-			var cs:CitrusSound;
-			loop1:for each(cs in soundsDic) {
-					
-				for each (var soundToPreserve:String in except)
-					if (soundToPreserve == cs.name)
-						break loop1;
-				
+			loop1:for each(var cs:CitrusSound in soundsDic) {
+					for each (var soundToPreserve:String in except)
+						if (soundToPreserve == cs.name)
+							continue loop1;
 					stopSound(cs.name);
 			}
 		}

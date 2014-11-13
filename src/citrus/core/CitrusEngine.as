@@ -25,9 +25,15 @@ package citrus.core {
 	 */	
 	public class CitrusEngine extends MovieClip
 	{
-		public static const VERSION:String = "3.1.9";
+		public static const VERSION:String = "3.1.10";
 				
 		private static var _instance:CitrusEngine;
+		
+		/**
+		 * DEBUG is not used by CitrusEngine, it is there for your own convenience
+		 * so you can access it wherever the _ce 'shortcut' is. defaults to false.
+		 */
+		public var DEBUG:Boolean = false;
 		
 		/**
 		 * Used to pause animations in SpriteArt and StarlingArt.
@@ -100,8 +106,11 @@ package citrus.core {
 			onPlayingChange.add(handlePlayingChange);
 			
 			// on iOS if the physical button is off, mute the sound
-			if (SoundMixer.audioPlaybackMode)
-				SoundMixer.audioPlaybackMode = "ambient";
+			if ("audioPlaybackMode" in SoundMixer)
+				try { SoundMixer.audioPlaybackMode = "ambient"; }
+					catch(e:ArgumentError) {
+							trace("[CitrusEngine] could not set SoundMixer.audioPlaybackMode to ambient.");
+						}
 			
 			//Set up console
 			_console = new Console(9); //Opens with tab key by default
@@ -129,6 +138,7 @@ package citrus.core {
 		public function destroy():void {
 			
 			onPlayingChange.removeAll();
+			onStageResize.removeAll();
 			
 			stage.removeEventListener(Event.ACTIVATE, handleStageActivated);
 			stage.removeEventListener(Event.DEACTIVATE, handleStageDeactivated);
@@ -300,7 +310,7 @@ package citrus.core {
 		 * it can be overriden to update other values that depend on the values of _screenWidth/_screenHeight.
 		 */
 		protected function resetScreenSize():void
-		{	
+		{
 			_screenWidth = stage.stageWidth;
 			_screenHeight = stage.stageHeight;
 		}
@@ -374,11 +384,17 @@ package citrus.core {
 			
 		}
 		
+		/**
+		 * Set CitrusEngine's playing to false. Every update methods aren't anymore called.
+		 */
 		protected function handleStageDeactivated(e:Event):void
 		{
 			playing = false;
 		}
 		
+		/**
+		 * Set CitrusEngine's playing to true. The main loop is performed.
+		 */
 		protected function handleStageActivated(e:Event):void
 		{
 			playing = true;

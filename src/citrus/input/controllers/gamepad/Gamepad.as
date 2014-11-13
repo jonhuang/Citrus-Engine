@@ -42,11 +42,31 @@ package citrus.input.controllers.gamepad
 		 */
 		public static var debug:Boolean = false;
 		
+		public static var activityChannel:int = 100;
+		
 		/**
 		 * if set to true, all 'children controllers' will send an action with their controller name when active (value != 0) 
 		 * helps figuring out which button someone touches for remapping in game for example.
 		 */
-		public var triggerActivity:Boolean = true;
+		public var _triggerActivity:Boolean = false;
+		
+		public function get triggerActivity():Boolean
+		{
+			return _triggerActivity;
+		}
+		
+		public function set triggerActivity(val:Boolean):void
+		{
+			if (_triggerActivity == val)
+				return;
+				
+			_triggerActivity = val;
+			
+			/*for each (var b:ButtonController in _buttons)
+				_input.stopActionsOf(b);
+			for each (var s:StickController in _sticks)
+				_input.stopActionsOf(s);*/
+		}
 		
 		public function Gamepad(name:String, device:GameInputDevice, map:Class = null, params:Object = null)
 		{
@@ -85,7 +105,30 @@ package citrus.input.controllers.gamepad
 		}
 		
 		/**
-		 * apply GamepadMap
+		 * This will parse all control names for substr, and if substr if present then will register is as a ButtonController
+		 * if its not already registered.
+		 * additionally its name will be prefixed with prefix (helps prevent confusion when triggerActivity is true for example).
+		 * 
+		 * guessUnregisteredButtons is called by default when trying to apply a map that is either null, or not extending GamePadMap.
+		 * @param	substr
+		 * @param	prefix
+		 */
+		public function guessUnregisteredButtons(substr:String = "BUTTON_",prefix:String = "UNMAPPED_"):void
+		{
+			var name:String;
+			for each(var control:GameInputControl in _controls)
+			{
+				name = control.id;
+				if (name in _usedControls)
+					continue;
+				if (name.indexOf(substr) > -1)
+					registerButton(prefix + name, name);
+			}
+		}
+		
+		/**
+		 * apply GamepadMap.
+		 * calls guessUnregisteredButtons when the map is null or not extending GamePadMap.
 		 * @param	map
 		 */
 		public function useMap(map:Class):void
@@ -102,8 +145,18 @@ package citrus.input.controllers.gamepad
 					trace(name, "using map", map);
 				}
 				else if (debug)
+				{
 					trace(this, "unable to use the ", map, "map.");
+					trace(this, "will force default button registering");
+					guessUnregisteredButtons();
+				}
 			}
+			else
+			{
+				trace(this, "will force default button registering");
+				guessUnregisteredButtons();
+			}
+				
 			
 			stopAllActions();
 		}
@@ -113,14 +166,15 @@ package citrus.input.controllers.gamepad
 			if (!_enabled)
 				return;
 				
-			if (!(e.currentTarget.id in _usedControls))
+			var id:String = (e.currentTarget as GameInputControl).id;
+				
+			if (!(id in _usedControls))
 			{
 				if(debug)
 					trace(e.target.id, "seems to not be bound to any controls for", this);
 				return;
 			}
 			
-			var id:String = (e.currentTarget as GameInputControl).id;
 			var value:Number = (e.currentTarget as GameInputControl).value;
 			
 			var icontrols:Vector.<Icontrol> = _usedControls[id];
@@ -156,19 +210,20 @@ package citrus.input.controllers.gamepad
 		
 		protected function unbindControl(controlid:String, controller:Icontrol):void
 		{
-			if (!(controlid in _usedControls))
+			if (controlid in _usedControls)
 			{
 				if (_usedControls[controlid] is Vector.<Icontrol>)
 				{
 					var controls:Vector.<Icontrol> = _usedControls[controlid];
 					var icontrol:Icontrol;
 					var i:String;
+					
 					for (i in controls)
 					{
-						icontrol = controls[int(i)];
+						icontrol = controls[i];
 						if (icontrol == controller)
 						{
-							controls.splice(int(i), 1);
+							controls.splice(parseInt(i), 1);
 							break;
 						}
 					}
@@ -177,8 +232,8 @@ package citrus.input.controllers.gamepad
 					{
 						delete _usedControls[controlid];
 						
-						if (_controls[controlid].hasEventListener(Event.CHANGE, onChange))
-							_controls[controlid].removeEventListener(Event.CHANGE, onChange);
+						if (_controls[controlid].hasEventListener(Event.CHANGE))
+							_controls[controlid].removeEventListener(Event.CHANGE,onChange);
 					}
 				}
 			}
@@ -302,6 +357,60 @@ package citrus.input.controllers.gamepad
 			}
 			
 			(_buttons[name] as ButtonController).action = action;
+		}
+		
+		public function swapButtonActions(button1Name:String, button2Name:String):void
+		{
+			var b1:ButtonController = getButton(button1Name);
+			var b2:ButtonController = getButton(button2Name);
+			if (!b1 || !b2)
+				return;
+			var action1:String = b1.action;
+			b1.action = b2.action;
+			b2.action = action1;
+		}
+		
+		public function removeActionFromControllers(actionName:String):void
+		{
+			removeActionFromButtons(actionName);
+			removeActionFromSticks(actionName);
+		}
+		
+		public function removeActionFromButtons(actionName:String):void
+		{	
+			for each (var button:ButtonController in _buttons)
+				if (button.action == actionName )
+					button.action = null;
+		}
+		
+		public function removeActionFromSticks(actionName:String):void
+		{
+			for each (var stick:StickController in _sticks)
+			{
+				if (stick.upAction == actionName)
+				{
+					stick.upAction = null;
+					continue;
+				}
+				
+				if (stick.rightAction == actionName)
+				{
+					stick.rightAction = null;
+					continue;
+				}
+				
+				if (stick.downAction == actionName)
+				{
+					stick.downAction = null;
+					continue;
+				}
+				
+				if (stick.leftAction == actionName)
+				{
+					stick.leftAction = null;
+					continue;
+				}
+			}
 		}
 		
 		/**

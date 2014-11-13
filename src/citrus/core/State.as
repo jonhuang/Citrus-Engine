@@ -27,7 +27,7 @@ package citrus.core {
 			
 			_ce = CitrusEngine.getInstance();
 
-			_realState = new MediatorState();
+			_realState = new MediatorState(this);
 		}
 
 		/**
@@ -35,6 +35,7 @@ package citrus.core {
 		 */
 		public function destroy():void {
 			_realState.destroy();
+			_realState = null;
 		}
 
 		/**
@@ -100,6 +101,20 @@ package citrus.core {
 		 */
 		public function remove(object:CitrusObject):void {
 			_realState.remove(object);
+		}
+		
+		/**
+		 * removeImmediately instaneously destroys and remove the object from the state.
+		 * 
+		 * While using remove() is recommended, there are specific case where this is needed.
+		 * please use with care.
+		 * 
+		 * Warning: 
+		 * - can break box2D if called directly or indirectly in a collision listener.
+		 * - effects unknown with nape.
+		 */
+		public function removeImmediately(object:CitrusObject):void {
+			_realState.removeImmediately(object);
 		}
 
 		/**

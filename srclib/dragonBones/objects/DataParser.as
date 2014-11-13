@@ -1,11 +1,13 @@
 ﻿package dragonBones.objects
 {
-	import flash.utils.ByteArray;
-	
-	import dragonBones.objects.ObjectDataParser;
-	import dragonBones.objects.SkeletonData;
-	import dragonBones.objects.XMLDataParser;
+	import dragonBones.core.dragonBones_internal;
 	import dragonBones.utils.BytesType;
+	import dragonBones.utils.ConstValues;
+	
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	
+	use namespace dragonBones_internal;
 	
 	public final class DataParser
 	{
@@ -115,17 +117,44 @@
 			return null;
 		}
 		
-		public static function parseData(rawData:Object):SkeletonData
+		public static function parseData(rawData:Object, ifSkipAnimationData:Boolean = false, outputAnimationDictionary:Dictionary = null):SkeletonData
 		{
 			if(rawData is XML)
 			{
-				return XMLDataParser.parseSkeletonData(rawData as XML);
+				return XMLDataParser.parseSkeletonData(rawData as XML, ifSkipAnimationData, outputAnimationDictionary);
 			}
 			else
 			{
-				return ObjectDataParser.parseSkeletonData(rawData);
+				return ObjectDataParser.parseSkeletonData(rawData, ifSkipAnimationData, outputAnimationDictionary);
 			}
 			return null;
+		}
+		
+		public static function parseAnimationDataByAnimationRawData(animationRawData:Object, armatureData:ArmatureData):AnimationData
+		{
+			var animationData:AnimationData = armatureData.animationDataList[0];
+			
+			
+			if(animationRawData is XML)
+			{
+				return XMLDataParser.parseAnimationData((animationRawData as XML), armatureData, animationData.frameRate);
+			}
+			else
+			{
+				return ObjectDataParser.parseAnimationData(animationRawData, armatureData, animationData.frameRate);
+			}
+		}
+		
+		public static function parseFrameRate(rawData:Object):uint
+		{
+			if(rawData is XML)
+			{
+				return uint(rawData.@[ConstValues.A_FRAME_RATE]);
+			}
+			else
+			{
+				return uint(rawData[ConstValues.A_FRAME_RATE]);
+			}
 		}
 	}
 }
