@@ -45,7 +45,7 @@ package citrus.view.spriteview
 		/**
 		 * if fpsRatio = .5, the animations will go 1/2 slower than the stage fps.
 		 */
-		public var fpsRatio:Number = .5; // jonedit
+		public var fpsRatio:Number = 1; // jon-- changing this causes problems when the art changes!
 		
 		public function AnimationSequence(mc:MovieClip) 
 		{
