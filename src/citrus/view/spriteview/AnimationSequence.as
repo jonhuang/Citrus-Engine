@@ -1,11 +1,13 @@
 package citrus.view.spriteview 
 {
-	import citrus.core.CitrusEngine;
 	import flash.display.FrameLabel;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
+	
+	import citrus.core.CitrusEngine;
+	
 	import org.osflash.signals.Signal;
 	
 	/**
@@ -24,6 +26,11 @@ package citrus.view.spriteview
 	 * In fact you should not control the timeline yourself through actionscript in the fla, AnimationSequence will
 	 * take care of looping animations that need looping, going back and forth or stopping as well as pause/resume.
 	 */
+	
+	
+	// JON: Creating a version of this where you can jump to a percent of an action. 
+	// and you can play from that position too. 
+	
 	public class AnimationSequence extends Sprite
 	{
 		protected var _ce:CitrusEngine;
@@ -132,6 +139,15 @@ package citrus.view.spriteview
 			_ce.stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 		}
 		
+		// JON 
+		public function jump(name:String, percent:Number):void {
+			this.pause();
+			if (name in anims) {
+				_currentAnim = anims[name];
+				_mc.gotoAndStop(_currentAnim.startFrame + (Math.floor(_currentAnim.endFrame - _currentAnim.startFrame)*percent));
+			}
+		}
+		
 		public function changeAnimation(name:String, loop:Boolean  = false):void
 		{
 			_looping = loop;
@@ -159,6 +175,8 @@ package citrus.view.spriteview
 		public function get mc():MovieClip {
 			return _mc;
 		}
+		
+		
 		
 	}
 

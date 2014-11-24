@@ -147,6 +147,30 @@ package citrus.input.controllers
 			
 		}
 		
+		// JON adding enable support
+		override public function set enabled(val:Boolean):void {
+			
+			if (val === super.enabled) return;
+			
+			super.enabled = val;
+			_updateEnabled = val;
+			
+			if (val) {
+				_accel = new  flash.sensors.Accelerometer();
+				_accel.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
+			}
+			else {
+				_accel.removeEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
+				_accel = null;
+				
+			}
+			
+		}
+		override public function get enabled():Boolean {
+			return super.enabled;
+		}
+		
+		
 		/*
 		 * This updates the target values of acceleration which will be eased on each frame through the update function.
 		 */
