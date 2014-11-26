@@ -160,8 +160,10 @@ package citrus.input.controllers
 				_accel.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
 			}
 			else {
-				_accel.removeEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
-				_accel = null;
+				if (_accel) {
+					_accel.removeEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
+					_accel = null;
+				}
 				
 			}
 			
