@@ -28,12 +28,6 @@ package citrus.sounds
 		public var drawRadius:Boolean = false;
 		public var drawObject:Boolean = true;
 		
-		// jon: to fix error
-		public function get art():ICitrusArt {
-			throw new Error("CitrusSoundSpace::art() not implemented");
-			return null;
-		};
-		
 		
 		public function CitrusSoundSpace(name:String, params:Object = null) { 
 			
