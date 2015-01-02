@@ -148,6 +148,19 @@ package citrus.view.spriteview
 			}
 		}
 		
+		public function getAnimationLength(name:String):int {
+			if (name in anims) {
+				var query:AnimationSequenceData = anims[name];
+				return (query.endFrame - query.startFrame); 
+			}
+			else {
+				throw new Error("AnimationSequence::GetAnimationLength(name):" + name + "not found");
+			}
+			return 0;
+			
+		}
+		
+		
 		public function changeAnimation(name:String, loop:Boolean  = false):void
 		{
 			_looping = loop;
