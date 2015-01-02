@@ -81,9 +81,13 @@ package citrus.view.spriteview
 				if(fpsRatio == 1 || (time%((1/fpsRatio)<<0) == 0))
 					_mc.nextFrame();
 				time++;
-				
-				if (_mc.currentFrame == _currentAnim.endFrame)
+	
+				// jon big hack, I don't know why this is needed 
+				if ((!_looping && _mc.currentFrame == _currentAnim.endFrame)||(_looping && _mc.currentFrame > _currentAnim.endFrame)) {
+					
+//				if (_mc.currentFrame == _currentAnim.endFrame) {
 					handleAnimationComplete();	
+				}
 			}
 		}
 		
