@@ -109,10 +109,17 @@ package citrus.view.spriteview
 		 * Remove a loop animation to the Dictionnary.
 		 * @param tab an array with all the loop animation names.
 		 */
-		static public function removeLoopAnimations(tab:Array):void {
+		static public function removeLoopAnimations(tab:Array = null):void {
 
-			for each (var animation:String in tab) {
-				_loopAnimation[animation] = false;
+			if (!tab) {
+				// clear all
+				_loopAnimation = new Dictionary();
+				//for (var key:Object in _loopAnimation) delete _loopAnimation[key];
+			}
+			else {
+				for each (var animation:String in tab) {
+					_loopAnimation[animation] = false;
+				}
 			}
 		}
 		
