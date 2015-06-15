@@ -135,7 +135,7 @@ package citrus.objects {
 		 */
 		protected function createMaterial():void {
 			
-			_material = new Material(0.65, 0.57, 1.2, 1, 0);
+			_material = new Material(0.65, 0.57, 1.2, 1, 0.0005);
 		}
 		
 		/**
