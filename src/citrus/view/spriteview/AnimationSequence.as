@@ -1,6 +1,7 @@
 package citrus.view.spriteview 
 {
 	import flash.display.FrameLabel;
+	import flash.display.IGraphicsData;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -9,6 +10,8 @@ package citrus.view.spriteview
 	import citrus.core.CitrusEngine;
 	
 	import org.osflash.signals.Signal;
+	
+	import petfly.utils.drawing.MotionHold;
 	
 	/**
 	 * AnimationSequence.as wraps a flash MovieClip to manage different animations.
@@ -33,6 +36,8 @@ package citrus.view.spriteview
 	
 	public class AnimationSequence extends Sprite
 	{
+		public static const HOLD:String = "HOLD"; // a very special animation
+		
 		protected var _ce:CitrusEngine;
 		
 		protected var _mc:MovieClip;
@@ -53,6 +58,11 @@ package citrus.view.spriteview
 		 * if fpsRatio = .5, the animations will go 1/2 slower than the stage fps.
 		 */
 		public var fpsRatio:Number = 1; // jon-- changing this causes problems when the art changes!
+		
+		protected var _frameHold:Boolean = false;
+		protected var _frameHoldData:Vector.<IGraphicsData>;
+		protected var _frameHolder:Sprite;
+		
 		
 		public function AnimationSequence(mc:MovieClip) 
 		{
@@ -75,19 +85,33 @@ package citrus.view.spriteview
 		{
 			if (_paused)
 				return;
+
+			
 			
 			if (_playing)
 			{
-				if(fpsRatio == 1 || (time%((1/fpsRatio)<<0) == 0))
-					_mc.nextFrame();
-				time++;
-	
-				// jon big hack, I don't know why this is needed 
-				if ((!_looping && _mc.currentFrame == _currentAnim.endFrame)||(_looping && _mc.currentFrame > _currentAnim.endFrame)) {
-					
-//				if (_mc.currentFrame == _currentAnim.endFrame) {
-					handleAnimationComplete();	
+				if (_frameHold) {
+					trace("HOLDING");
+					MotionHold.draw(_frameHoldData, _frameHolder);
+					// todo need flag complete?
+					handleAnimationComplete();
 				}
+				else {
+					
+					if(fpsRatio == 1 || (time%((1/fpsRatio)<<0) == 0))
+						_mc.nextFrame();
+					time++;
+		
+					// jon big hack, I don't know why this is needed 
+					if ((!_looping && _mc.currentFrame == _currentAnim.endFrame) 	// at the end
+						||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
+						||(_looping && _mc.currentFrame > _currentAnim.endFrame)) { // past the loop
+						
+	//				if (_mc.currentFrame == _currentAnim.endFrame) {
+						handleAnimationComplete();	
+					}
+				}
+				
 			}
 		}
 		
@@ -131,6 +155,36 @@ package citrus.view.spriteview
 			AnimationSequenceData(anims[previousAnimation]).endFrame = _mc.totalFrames-1;
 		}
 		
+		
+		public function set frameHold(val:Boolean):void {
+			_frameHold = val;
+			
+			if (val) {
+				if (!_frameHolder) {
+					_frameHolder = new Sprite();
+					_frameHoldData = MotionHold.cloneGraphicsData(_mc.graphics.readGraphicsData());
+					addChild(_frameHolder);
+					removeChild(_mc);
+//					_mc.visible = true;
+				}
+				
+			}
+			else {
+				if (_frameHolder) {
+					addChild(_mc);
+					removeChild(_frameHolder);
+					_frameHolder = null;
+					_frameHoldData = null;
+//					_mc.visible = true;
+				}
+			}
+			
+		}
+		
+		public function get frameHold():Boolean {
+			return _frameHold;
+		}
+		
 		public function pause():void
 		{
 			_paused = true;
@@ -155,7 +209,7 @@ package citrus.view.spriteview
 		public function getAnimationLength(name:String):int {
 			if (name in anims) {
 				var query:AnimationSequenceData = anims[name];
-				return (query.endFrame - query.startFrame); 
+				return (query.endFrame - query.startFrame);  // TODO fix one frame actions here? do a || 1?
 			}
 			else {
 				throw new Error("AnimationSequence::GetAnimationLength(name):" + name + "not found");
@@ -168,6 +222,16 @@ package citrus.view.spriteview
 		public function changeAnimation(name:String, loop:Boolean  = false):void
 		{
 			_looping = loop;
+			
+			if (name == HOLD) {
+				this.frameHold = true;
+				_playing = true;
+				return;
+			}
+			else {
+				this.frameHold = false;
+			}
+			
 			if (name in anims)
 			{
 				_currentAnim = anims[name];
@@ -178,7 +242,7 @@ package citrus.view.spriteview
 		
 		public function hasAnimation(animation:String):Boolean
 		{
-			return anims[animation];
+			return !!anims[animation] || animation == HOLD;
 		}
 		
 		public function destroy():void
