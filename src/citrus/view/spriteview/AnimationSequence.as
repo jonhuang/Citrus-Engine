@@ -85,27 +85,24 @@ package citrus.view.spriteview
 		{
 			if (_paused)
 				return;
-
-			
 			
 			if (_playing)
 			{
 				if (_frameHold) {
-					trace("HOLDING");
 					MotionHold.draw(_frameHoldData, _frameHolder);
-					// todo need flag complete?
+					// flagged complete every frame.
 					handleAnimationComplete();
 				}
 				else {
 					
-					if(fpsRatio == 1 || (time%((1/fpsRatio)<<0) == 0))
+					if(fpsRatio == 1 || (time%((1/fpsRatio)<<0) == 0)) {
 						_mc.nextFrame();
+					}
 					time++;
 		
-					// jon big hack, I don't know why this is needed 
 					if ((!_looping && _mc.currentFrame == _currentAnim.endFrame) 	// at the end
 						||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
-						||(_looping && _mc.currentFrame > _currentAnim.endFrame)) { // past the loop
+						||(_looping && _mc.currentFrame > _currentAnim.endFrame)) { // past the loop, not sure why this is needed (but it is)
 						
 	//				if (_mc.currentFrame == _currentAnim.endFrame) {
 						handleAnimationComplete();	
