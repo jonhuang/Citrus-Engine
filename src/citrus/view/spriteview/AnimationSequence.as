@@ -224,7 +224,7 @@ package citrus.view.spriteview
 				return (query.endFrame - query.startFrame);  // TODO fix one frame actions here? do a || 1?
 			}
 			else {
-				throw new Error("AnimationSequence::GetAnimationLength(name):" + name + "not found");
+				throw new Error("AnimationSequence::GetAnimationLength(name): '" + name + "' not found");
 			}
 			return 0;
 			
