@@ -37,6 +37,7 @@ package citrus.view.spriteview
 	public class AnimationSequence extends Sprite
 	{
 		public static const HOLD:String = "HOLD"; // a very special animation
+		public static const REVERSE_PREFIX:String = "!"; // indicates to play that animation backwards!
 		
 		protected var _ce:CitrusEngine;
 		
@@ -58,6 +59,13 @@ package citrus.view.spriteview
 		 * if fpsRatio = .5, the animations will go 1/2 slower than the stage fps.
 		 */
 		public var fpsRatio:Number = 1; // jon-- changing this causes problems when the art changes!
+
+		/**
+		 * when set, animations start at the end and go to the beginning!
+		 */
+		public var backwards:Boolean = false; 
+		
+		
 		
 		protected var _frameHold:Boolean = false;
 		protected var _frameHoldData:Vector.<IGraphicsData>;
@@ -95,16 +103,26 @@ package citrus.view.spriteview
 				}
 				else {
 					
+					var atEnd:Boolean = false;
+					
 					if(fpsRatio == 1 || (time%((1/fpsRatio)<<0) == 0)) {
-						_mc.nextFrame();
+						
+						if (backwards) {
+							_mc.prevFrame();
+							atEnd = ((!_looping && _mc.currentFrame == _currentAnim.startFrame) 	// at the end
+								||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
+								||(_looping && _mc.currentFrame < _currentAnim.startFrame));
+						}
+						else {
+							_mc.nextFrame();
+							atEnd = ((!_looping && _mc.currentFrame == _currentAnim.endFrame) 	// at the end
+								||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
+								||(_looping && _mc.currentFrame > _currentAnim.endFrame));
+						}
 					}
 					time++;
 		
-					if ((!_looping && _mc.currentFrame == _currentAnim.endFrame) 	// at the end
-						||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
-						||(_looping && _mc.currentFrame > _currentAnim.endFrame)) { // past the loop, not sure why this is needed (but it is)
-						
-	//				if (_mc.currentFrame == _currentAnim.endFrame) {
+					if (atEnd) {
 						handleAnimationComplete();	
 					}
 				}
@@ -162,7 +180,6 @@ package citrus.view.spriteview
 					_frameHoldData = MotionHold.cloneGraphicsData(_mc.graphics.readGraphicsData());
 					addChild(_frameHolder);
 					removeChild(_mc);
-//					_mc.visible = true;
 				}
 				
 			}
@@ -172,7 +189,6 @@ package citrus.view.spriteview
 					removeChild(_frameHolder);
 					_frameHolder = null;
 					_frameHoldData = null;
-//					_mc.visible = true;
 				}
 			}
 			
@@ -216,10 +232,20 @@ package citrus.view.spriteview
 		}
 		
 		
-		public function changeAnimation(name:String, loop:Boolean  = false):void
+		public function changeAnimation(name:String, loop:Boolean = false):void
 		{
 			_looping = loop;
 			
+			// special mode, backwards
+			if (name.charAt(0) === REVERSE_PREFIX) {
+				this.backwards = true;
+				name = name.substr(1); // chop!
+			}
+			else {
+				this.backwards = false;
+			}
+			
+			// special mode, HOLD
 			if (name == HOLD) {
 				this.frameHold = true;
 				_playing = true;
@@ -232,14 +258,22 @@ package citrus.view.spriteview
 			if (name in anims)
 			{
 				_currentAnim = anims[name];
-				_mc.gotoAndStop(_currentAnim.startFrame);
+				
+				if (this.backwards) {
+					_mc.gotoAndStop(_currentAnim.endFrame);
+				}
+				else {
+					_mc.gotoAndStop(_currentAnim.startFrame);
+				}
 				_playing = true;
 			}
 		}
 		
 		public function hasAnimation(animation:String):Boolean
 		{
-			return !!anims[animation] || animation == HOLD;
+			return !!anims[animation] 
+				|| animation == HOLD 
+				|| (!!anims[animation.slice(1)] && animation.charAt(0) == REVERSE_PREFIX);
 		}
 		
 		public function destroy():void
