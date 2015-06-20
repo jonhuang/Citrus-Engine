@@ -11,7 +11,6 @@ package citrus.view.spriteview
 	
 	import org.osflash.signals.Signal;
 	
-	import petfly.utils.drawing.MotionHold;
 	
 	/**
 	 * AnimationSequence.as wraps a flash MovieClip to manage different animations.
