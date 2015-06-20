@@ -1,6 +1,7 @@
 package citrus.view.spriteview
 {
 	import flash.display.GraphicsPath;
+	import flash.display.GraphicsSolidFill;
 	import flash.display.IGraphicsData;
 	import flash.display.Sprite;
 	
@@ -12,6 +13,8 @@ package citrus.view.spriteview
 		
 		protected static const THRESHOLD:Number = 3;
 		protected static const TREMBLE:Number = .3;
+		
+		public static var TARGET_COLOR:int = -1
 		
 		// sort of a messy clone. Just makes new path data numbers, since the rest shouldn't change.
 		public static function cloneGraphicsData(orig:Vector.<IGraphicsData>):Vector.<IGraphicsData> {
@@ -31,18 +34,37 @@ package citrus.view.spriteview
 			return copy;
 		}
 		
+		/**
+		 * 
+		 * 
+		 * @targetFill: only apply motion hold to this color
+		 */
 		public static function draw(orig:Vector.<IGraphicsData>, copy:Sprite):void {
 			
 			var copyData:Vector.<IGraphicsData> = cloneGraphicsData(orig);
 			var len:uint = copyData.length;
 			
 			var rand:Number = 0;
+
+			var fillColor:uint; 
 			
 			for (var i:int = 0; i<len; i++) {
 				
 				
-				var copyPath:GraphicsPath = copyData[i] as GraphicsPath;
+				// maybe it's a fill?
+				var copyFill:GraphicsSolidFill = copyData[i] as GraphicsSolidFill;
+				if (copyFill) {
+					fillColor = copyFill.color;
+					continue;
+				}
 				
+				// we're not interested in things that are the wrong color.
+				if (TARGET_COLOR >= 0 && fillColor !== TARGET_COLOR) {
+					continue;
+				}
+
+				// okay, so it's a path
+				var copyPath:GraphicsPath = copyData[i] as GraphicsPath;
 				if (!copyPath) continue;
 				
 				var com:Vector.<int> = copyPath.commands;
