@@ -98,7 +98,10 @@ package citrus.view.spriteview
 				if (_frameHold) {
 					MotionHold.draw(_frameHoldData, _frameHolder);
 					// flagged complete every frame.
-					handleAnimationComplete();
+					
+					if (!_looping) {
+						handleAnimationComplete();
+					}
 				}
 				else {
 					
