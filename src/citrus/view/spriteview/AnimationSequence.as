@@ -64,12 +64,9 @@ package citrus.view.spriteview
 		 */
 		public var backwards:Boolean = false; 
 		
-		
-		
 		protected var _frameHold:Boolean = false;
 		protected var _frameHoldData:Vector.<IGraphicsData>;
 		protected var _frameHolder:Sprite;
-		
 		
 		public function AnimationSequence(mc:MovieClip) 
 		{
