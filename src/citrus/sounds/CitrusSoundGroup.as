@@ -22,8 +22,12 @@ package citrus.sounds
 		
 		public var polyphonic:Boolean = true;
 		
-		public function CitrusSoundGroup() 
+		public function CitrusSoundGroup(groupId:String = null) 
 		{
+			if (groupId) {
+				_groupID = groupId;
+			}
+			
 			_sounds = new Vector.<CitrusSound>();
 		}
 		
