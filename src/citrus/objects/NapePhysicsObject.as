@@ -123,7 +123,7 @@ package citrus.objects {
 			
 			// jonhack to fix the topLeft registration by moving the body
 			var pos:Vec2 = (registration === 'topLeft') ? Vec2.weak(_x + _width/2, _y + _height/2) : Vec2.weak(_x, _y);
-			
+
 			_body = new Body(_bodyType, pos);
 			_body.userData.myData = this;
 			

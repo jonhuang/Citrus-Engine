@@ -157,30 +157,25 @@ package citrus.view.spriteview
 			
 			// jonhack
 			//  I want all physics objects to be centered
-			// since I'm moving the physics body down instead.
-			if (citrusObject is APhysicsObject) {
-				_content.x = -_content.width / 2;
-				_content.y = -_content.height / 2;
-			}
-			else {
-				// for CitrusSprites
-//				if (registrationPoint === "center") {
-					_content.x = 0;
-					_content.y = 0;
-//				} else {
-//					_content.x = -_content.width / 2;
-//					_content.y = -_content.height / 2;
-//				}
-			}
-			
-			
-//			if (registrationPoint == "topLeft") {
-//				_content.x = 0;
-//				_content.y = 0;
-//			} else if (registrationPoint == "center") {
+//			// since I'm moving the physics body down instead.
+//			if (citrusObject is APhysicsObject) {
 //				_content.x = -_content.width / 2;
 //				_content.y = -_content.height / 2;
 //			}
+//			else {
+//				// for CitrusSprites
+////				if (registrationPoint === "center") {
+////					_content.x = 0;
+////					_content.y = 0;
+////				} else {
+////					_content.x = -_content.width / 2;
+////					_content.y = -_content.height / 2;
+////				}
+//			}
+//			
+			
+				_content.x = 0;
+				_content.y = 0;
 			
 		}
 		
