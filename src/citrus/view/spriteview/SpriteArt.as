@@ -251,6 +251,11 @@ package citrus.view.spriteview
 				else if (_view is Class)
 				{
 					tmpObj = new _view();
+					
+//					if (tmpObj is MovieClip)
+//						_content = new AnimationSequence(tmpObj as MovieClip);
+//					else if(tmpObj is DisplayObject)
+//						_content = tmpObj;
 					//view property is a class reference
 					if(tmpObj is DisplayObject)
 						_content = tmpObj;

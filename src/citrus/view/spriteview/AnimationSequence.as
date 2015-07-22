@@ -170,6 +170,14 @@ package citrus.view.spriteview
 		}
 		
 		
+		public function listAnimations():Array {
+			var animations:Array = [];
+			for (var key:String in anims) {
+				animations.push(key);
+			}
+			return animations;
+		}
+		
 		public function set frameHold(val:Boolean):void {
 			_frameHold = val;
 			
