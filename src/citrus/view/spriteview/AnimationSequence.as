@@ -226,6 +226,19 @@ package citrus.view.spriteview
 			}
 		}
 		
+		// JON
+		public function getAnimationStart(name:String):int {
+			if (name in anims) {
+				var query:AnimationSequenceData = anims[name];
+				return query.startFrame;
+			}
+			else {
+				throw new Error("AnimationSequence::GetAnimationStart(name): '" + name + "' not found");
+			}
+			return 0;
+		}
+		
+		
 		public function getAnimationLength(name:String):int {
 			if (name in anims) {
 				var query:AnimationSequenceData = anims[name];
@@ -235,7 +248,6 @@ package citrus.view.spriteview
 				throw new Error("AnimationSequence::GetAnimationLength(name): '" + name + "' not found");
 			}
 			return 0;
-			
 		}
 		
 		
