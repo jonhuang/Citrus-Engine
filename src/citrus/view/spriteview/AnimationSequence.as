@@ -132,8 +132,9 @@ package citrus.view.spriteview
 		protected function handleAnimationComplete():void
 		{
 			onAnimationComplete.dispatch(_currentAnim.name);
-			if (_looping && _playing)
+			if (_looping && _playing) {
 				changeAnimation(_currentAnim.name, _looping);
+			}
 			else
 				_playing = false;
 		}
@@ -217,13 +218,30 @@ package citrus.view.spriteview
 			_ce.stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 		}
 		
+//		// JON 
+//		public function jump(offset:int):void {
+//			var tar:int = _mc.currentFrame + offset;
+//			if (tar < _currentAnim.startFrame || tar > _currentAnim.endFrame) {
+//				throw new Error("AnimationSequence Jump out of bounds error. Must stay within current animation.");
+//			}
+//			_mc.gotoAndStop(tar);
+//		}
+		
 		// JON 
-		public function jump(name:String, percent:Number):void {
-			this.pause();
-			if (name in anims) {
-				_currentAnim = anims[name];
-				_mc.gotoAndStop(_currentAnim.startFrame + (Math.floor(_currentAnim.endFrame - _currentAnim.startFrame)*percent));
+		public function setAnimationOffset(offset:int):void {
+			var tar:int = _currentAnim.startFrame + offset;
+			if (tar < _currentAnim.startFrame || tar > _currentAnim.endFrame) {
+				throw new Error("AnimationSequence Jump out of bounds error. Must stay within current animation.");
 			}
+			_mc.gotoAndStop(tar);
+		}
+		
+		
+		// JON 
+		public function getAnimationOffset():int {
+			var offset:int = _mc.currentFrame - _currentAnim.startFrame - 1;
+			if (offset < 0 || offset > _currentAnim.endFrame) throw new Error ("Expected animation offset to be within current animation bounds");
+			return offset;
 		}
 		
 		// JON
