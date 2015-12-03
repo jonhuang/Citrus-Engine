@@ -239,8 +239,8 @@ package citrus.view.spriteview
 		
 		// JON 
 		public function getAnimationOffset():int {
-			var offset:int = _mc.currentFrame - _currentAnim.startFrame - 1;
-			if (offset < 0 || offset > _currentAnim.endFrame) throw new Error ("Expected animation offset to be within current animation bounds");
+			var offset:int = _mc.currentFrame - _currentAnim.startFrame;
+			offset = Math.min(Math.max(offset, 0),_currentAnim.endFrame);
 			return offset;
 		}
 		
