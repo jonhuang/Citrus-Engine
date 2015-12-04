@@ -230,9 +230,7 @@ package citrus.view.spriteview
 		// JON 
 		public function setAnimationOffset(offset:int):void {
 			var tar:int = _currentAnim.startFrame + offset;
-			if (tar < _currentAnim.startFrame || tar > _currentAnim.endFrame) {
-				throw new Error("AnimationSequence Jump out of bounds error. Must stay within current animation.");
-			}
+			tar = Math.min(_currentAnim.endFrame, Math.max(_currentAnim.startFrame, tar));
 			_mc.gotoAndStop(tar);
 		}
 		
