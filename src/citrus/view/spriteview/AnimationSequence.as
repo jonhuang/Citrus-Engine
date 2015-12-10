@@ -46,7 +46,7 @@ package citrus.view.spriteview
 		protected var time:int = 0;
 		
 		protected var _currentAnim:AnimationSequenceData;
-		protected var _currentFrame:int = 0;
+//		protected var _currentFrame:int = 0;
 		protected var _looping:Boolean = false;
 		protected var _playing:Boolean = false;
 		protected var _paused:Boolean = false;
@@ -114,6 +114,7 @@ package citrus.view.spriteview
 						}
 						else {
 							_mc.nextFrame();
+//							trace("next frame", _mc.currentFrame); 
 							atEnd = ((!_looping && _mc.currentFrame == _currentAnim.endFrame) 	// at the end
 								||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
 								||(_looping && _mc.currentFrame > _currentAnim.endFrame));
@@ -298,7 +299,13 @@ package citrus.view.spriteview
 					_mc.gotoAndStop(_currentAnim.endFrame);
 				}
 				else {
-					_mc.gotoAndStop(_currentAnim.startFrame);
+					// JON: the -1 is a hack/bugfix here. Original problem was that 
+					// the first update frame was skipped by the immediate nextframe() on enterframe.
+					// the -1 allows it to compensate for that.
+					
+					_mc.gotoAndStop(Math.max(0,_currentAnim.startFrame-1));
+//					_mc.gotoAndStop(_currentAnim.startFrame);
+//					trace("start", _mc.currentFrame);
 				}
 				_playing = true;
 			}
