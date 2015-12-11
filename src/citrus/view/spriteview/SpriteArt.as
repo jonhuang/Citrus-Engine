@@ -240,8 +240,13 @@ package citrus.view.spriteview
 							throw new Error("[SpriteArt] could not find class definition for \"" + String(classString) + "\". \n Make sure that you compile it with the project or that its the right classpath.");
 						}
 						tmpObj = new artClass();
-						if (tmpObj is MovieClip)
-						_content = new AnimationSequence(tmpObj as MovieClip);
+						if (tmpObj is MovieClip) {
+							_content = new AnimationSequence(tmpObj as MovieClip);
+							
+							//JON: bugfix make the animation setter think _animation changed even if it didn't.
+							var anim:String = _animation; _animation = null; animation = anim;
+
+						}
 						else if(tmpObj is DisplayObject)
 						_content = tmpObj;
 						else

@@ -284,6 +284,7 @@ package citrus.view.spriteview
 		
 		public function changeAnimation(name:String, loop:Boolean = false):void
 		{
+			
 			_looping = loop;
 			
 			// special mode, backwards
