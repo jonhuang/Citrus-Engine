@@ -50,7 +50,9 @@ package citrus.view.spriteview
 		protected var _looping:Boolean = false;
 		protected var _playing:Boolean = false;
 		protected var _paused:Boolean = false;
-		protected var _animChanged:Boolean = false;
+//		protected var _animChanged:Boolean = false;
+
+		protected var _justLanded:Boolean = false; // jon: a bit hacky, but gives us one frame after label change before advancing
 		
 		public var onAnimationComplete:Signal;
 		
@@ -113,12 +115,23 @@ package citrus.view.spriteview
 								||(_looping && _mc.currentFrame < _currentAnim.startFrame));
 						}
 						else {
-							_mc.nextFrame();
-//							trace("next frame", _mc.currentFrame); 
-							atEnd = ((!_looping && _mc.currentFrame == _currentAnim.endFrame) 	// at the end
-								||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
-								||(_looping && _mc.currentFrame > _currentAnim.endFrame));
+//							_mc.nextFrame();
+							
+							var next:uint = _mc.currentFrame + 1;
+							
+//							atEnd = ((!_looping && next == _currentAnim.endFrame) 	// at the end
+//								||(_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
+//								||(_looping && next > _currentAnim.endFrame));
+							atEnd = ((_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
+								|| (next > _currentAnim.endFrame));
+//							trace("next frame", next, _currentAnim.endFrame);
+							
+							if (!atEnd && !_justLanded) {
+								_mc.nextFrame();
+							}
 						}
+						
+						_justLanded = false;
 					}
 					time++;
 		
@@ -168,7 +181,8 @@ package citrus.view.spriteview
 					AnimationSequenceData(anims[previousAnimation]).endFrame = anim.frame-1;
 				previousAnimation = anim.name;
 			}
-			AnimationSequenceData(anims[previousAnimation]).endFrame = _mc.totalFrames-1;
+//			AnimationSequenceData(anims[previousAnimation]).endFrame = _mc.totalFrames-1;
+			AnimationSequenceData(anims[previousAnimation]).endFrame = _mc.totalFrames; // jon: fixing off by 1 here, since frames are 1-indexed.
 		}
 		
 		
@@ -303,11 +317,12 @@ package citrus.view.spriteview
 					// the first update frame was skipped by the immediate nextframe() on enterframe.
 					// the -1 allows it to compensate for that.
 					
-					_mc.gotoAndStop(Math.max(0,_currentAnim.startFrame-1));
-//					_mc.gotoAndStop(_currentAnim.startFrame);
+//					_mc.gotoAndStop(Math.max(0,_currentAnim.startFrame-1));
+					_mc.gotoAndStop(_currentAnim.startFrame);
 //					trace("start", _mc.currentFrame);
 				}
 				_playing = true;
+				_justLanded = true;
 			}
 		}
 		
