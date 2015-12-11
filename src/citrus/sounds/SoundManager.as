@@ -188,7 +188,7 @@ package citrus.sounds {
 					cs.resume();
 			}	
 		}
-		
+
 		public function playSound(id:String):CitrusSoundInstance {
 			if (id in soundsDic)
 				return CitrusSound(soundsDic[id]).play();

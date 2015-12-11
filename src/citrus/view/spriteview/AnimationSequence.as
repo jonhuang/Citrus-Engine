@@ -124,7 +124,8 @@ package citrus.view.spriteview
 //								||(_looping && next > _currentAnim.endFrame));
 							atEnd = ((_currentAnim.startFrame == _currentAnim.endFrame) 		// 1-frame animation
 								|| (next > _currentAnim.endFrame));
-//							trace("next frame", next, _currentAnim.endFrame);
+							
+//							trace("frame", _mc.currentFrame, next, _currentAnim.endFrame);
 							
 							if (!atEnd && !_justLanded) {
 								_mc.nextFrame();
