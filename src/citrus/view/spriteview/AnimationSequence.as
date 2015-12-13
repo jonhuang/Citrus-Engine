@@ -146,12 +146,13 @@ package citrus.view.spriteview
 		
 		protected function handleAnimationComplete():void
 		{
-			onAnimationComplete.dispatch(_currentAnim.name);
 			if (_looping && _playing) {
 				changeAnimation(_currentAnim.name, _looping);
 			}
-			else
+			else {
 				_playing = false;
+			}
+			onAnimationComplete.dispatch(_currentAnim.name); // jon: moved this callback to bottom, makes more sense that way.
 		}
 		
 		protected function setupMCActions():void
