@@ -1,16 +1,16 @@
 package citrus.sounds {
 
+	import flash.media.SoundMixer;
+	import flash.media.SoundTransform;
+	import flash.utils.Dictionary;
+	
 	import aze.motion.eaze;
-
+	
 	import citrus.events.CitrusEventDispatcher;
 	import citrus.events.CitrusSoundEvent;
 	import citrus.sounds.groups.BGMGroup;
 	import citrus.sounds.groups.SFXGroup;
 	import citrus.sounds.groups.UIGroup;
-
-	import flash.media.SoundMixer;
-	import flash.media.SoundTransform;
-	import flash.utils.Dictionary;
 
 	public class SoundManager extends CitrusEventDispatcher {
 		
@@ -381,7 +381,7 @@ package citrus.sounds {
 		 * @param	callback
 		 */
 		public function tweenVolume(id:String, volume:Number = 0, tweenDuration:Number = 2, callback:Function = null):void {
-			if (soundIsPlaying(id)) {
+			if (id && soundIsPlaying(id)) {
 				
 				var citrusSound:CitrusSound = CitrusSound(soundsDic[id]);
 				var tweenvolObject:Object = {volume:citrusSound.volume};
@@ -403,8 +403,15 @@ package citrus.sounds {
 		}
 
 		public function crossFade(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
-
 			tweenVolume(fadeOutId, 0, tweenDuration);
+			tweenVolume(fadeInId, 1, tweenDuration);
+		}
+
+		// JON: like above, but stops the playback and checks for existance 
+		public function crossFadeOut(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
+			tweenVolume(fadeOutId, 0, tweenDuration, function(snd:CitrusSound):void {
+				snd.stop();
+			});
 			tweenVolume(fadeInId, 1, tweenDuration);
 		}
 		
