@@ -19,6 +19,7 @@ package citrus.sounds
 		use namespace citrus_internal;
 		
 		public var hideParamWarnings:Boolean = false;
+		public var data:Object = null; //jon
 		
 		protected var _name:String;
 		protected var _soundTransform:SoundTransform;
