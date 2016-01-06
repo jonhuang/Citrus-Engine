@@ -415,6 +415,14 @@ package citrus.sounds {
 			tweenVolume(fadeInId, 1, tweenDuration);
 		}
 		
+		// JON: like above, but PAUSES the playback and checks for existance 
+		public function crossFadePause(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
+			tweenVolume(fadeOutId, 0, tweenDuration, function(snd:CitrusSound):void {
+				snd.pause();
+			});
+			tweenVolume(fadeInId, 1, tweenDuration);
+		}
+		
 		protected function handleSoundLoaded(e:CitrusSoundEvent):void
 		{
 			var cs:CitrusSound;
