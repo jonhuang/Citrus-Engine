@@ -1,15 +1,16 @@
 package citrus.sounds
 {
-	import citrus.core.CitrusEngine;
-	import citrus.events.CitrusEvent;
-	import citrus.events.CitrusEventDispatcher;
-	import citrus.events.CitrusSoundEvent;
-	import citrus.utils.SoundChannelUtil;
 	import flash.events.Event;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
+	
+	import citrus.core.CitrusEngine;
 	import citrus.core.citrus_internal;
+	import citrus.events.CitrusEvent;
+	import citrus.events.CitrusEventDispatcher;
+	import citrus.events.CitrusSoundEvent;
+	import citrus.utils.SoundChannelUtil;
 	
 	/**
 	 * CitrusSoundInstance
@@ -230,8 +231,11 @@ package citrus.sounds
 				_last_position = _soundChannel.position;
 				_soundChannel.stop();
 			}
-			
-			soundChannel = _parentsound.sound.play(0, int.MAX_VALUE);
+//			else {
+//				
+				soundChannel = _parentsound.sound.play(0, int.MAX_VALUE);
+//			}
+
 			
 			_isPlaying = false;
 			_isPaused = true;
@@ -274,7 +278,7 @@ package citrus.sounds
 			
 			removeSelfFromVector(_list);
 			removeSelfFromVector(_nonPermanent);
-			removeSelfFromVector(_parentsound.soundInstances);
+			removeSelfFromVector(_parentsound.soundInstances as Vector.<CitrusSoundInstance>); // jon adding explicit cast
 			
 			if (forced)
 				dispatcher(CitrusSoundEvent.FORCE_STOP);
