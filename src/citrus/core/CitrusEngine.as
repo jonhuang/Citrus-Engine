@@ -106,8 +106,15 @@ package citrus.core {
 			onPlayingChange.add(handlePlayingChange);
 			
 			// on iOS if the physical button is off, mute the sound
+//			if ("audioPlaybackMode" in SoundMixer)
+//				try { SoundMixer.audioPlaybackMode = "ambient"; }
+//					catch(e:ArgumentError) {
+//							trace("[CitrusEngine] could not set SoundMixer.audioPlaybackMode to ambient.");
+//						}
+
+			// jon: chosing to use MEDIA instead, since users are always confused by the silence switch
 			if ("audioPlaybackMode" in SoundMixer)
-				try { SoundMixer.audioPlaybackMode = "ambient"; }
+				try { SoundMixer.audioPlaybackMode = "media"; }
 					catch(e:ArgumentError) {
 							trace("[CitrusEngine] could not set SoundMixer.audioPlaybackMode to ambient.");
 						}

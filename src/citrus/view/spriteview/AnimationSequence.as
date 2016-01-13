@@ -310,22 +310,27 @@ package citrus.view.spriteview
 			
 			if (name in anims)
 			{
+				// JON: justlanded a hack/bugfix here. Original problem was that 
+				// the first update frame was skipped by the immediate nextframe() on enterframe.
+				// so when you jumped to this animation, it would be at the END of the frame, so it would update to the next frame befroe you
+				// saw the first one.
+				
+				// this led to another problem though, where you'd double frames when it was looped, so now we check if it's the same.
+				if (_currentAnim != anims[name]) {
+					_justLanded = true;
+				}
+				
 				_currentAnim = anims[name];
 				
 				if (this.backwards) {
 					_mc.gotoAndStop(_currentAnim.endFrame);
 				}
 				else {
-					// JON: the -1 is a hack/bugfix here. Original problem was that 
-					// the first update frame was skipped by the immediate nextframe() on enterframe.
-					// the -1 allows it to compensate for that.
-					
-//					_mc.gotoAndStop(Math.max(0,_currentAnim.startFrame-1));
 					_mc.gotoAndStop(_currentAnim.startFrame);
 //					trace("start", _mc.currentFrame);
 				}
 				_playing = true;
-				_justLanded = true;
+				
 			}
 		}
 		
