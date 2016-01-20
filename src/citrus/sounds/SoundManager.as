@@ -408,20 +408,20 @@ package citrus.sounds {
 		}
 
 		// JON: like above, but stops the playback and checks for existance 
-		public function crossFadeOut(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
-			tweenVolume(fadeOutId, 0, tweenDuration, function(snd:CitrusSound):void {
-				snd.stop();
-			});
-			tweenVolume(fadeInId, 1, tweenDuration);
-		}
-		
-		// JON: like above, but PAUSES the playback and checks for existance 
-		public function crossFadePause(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
-			tweenVolume(fadeOutId, 0, tweenDuration, function(snd:CitrusSound):void {
-				snd.pause();
-			});
-			tweenVolume(fadeInId, 1, tweenDuration);
-		}
+//		public function crossFadeOut(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
+//			tweenVolume(fadeOutId, 0, tweenDuration, function(snd:CitrusSound):void {
+//				snd.stop();
+//			});
+//			tweenVolume(fadeInId, 1, tweenDuration);
+//		}
+//		
+//		// JON: like above, but PAUSES the playback and checks for existance 
+//		public function crossFadePause(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2, volume:Number = 1):void {
+//			tweenVolume(fadeOutId, 0, tweenDuration, function(snd:CitrusSound):void {
+//				snd.pause();
+//			});
+//			tweenVolume(fadeInId, volume, tweenDuration);
+//		}
 		
 		protected function handleSoundLoaded(e:CitrusSoundEvent):void
 		{
