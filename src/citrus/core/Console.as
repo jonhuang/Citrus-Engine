@@ -262,6 +262,11 @@ package citrus.core {
 			_inputField.text = "";
 		}
 		
+		public function print(str:String):void {
+			showConsole();
+			_inputField.text = str;
+		}
+		
 		private function onAddedToStage(event:Event):void
 		{
 			graphics.beginFill(0x000000, .8);
