@@ -149,9 +149,10 @@ package citrus.sounds {
 		{
 			if (name in soundsDic)
 				return soundsDic[name];
-			else
-				trace(this,"getSound() : sound",name,"doesn't exist.");
-			return null;
+			else {
+				// trace(this,"getSound() : sound",name,"doesn't exist.");
+				return null;
+			}
 		}
 		
 		public function preloadAllSounds():void
