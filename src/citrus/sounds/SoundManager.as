@@ -138,7 +138,7 @@ package citrus.sounds {
 				if (sg.groupID == name)
 					return sg;
 			}
-			trace(this,"getGroup() : group",name,"doesn't exist.");
+			// trace(this,"getGroup() : group",name,"doesn't exist.");
 			return null;
 		}
 		
@@ -398,8 +398,10 @@ package citrus.sounds {
 						else
 							callback(citrusSound);
 				});
-			} else 
-				trace("the sound " + id + " is not playing");
+			} else {
+				
+//				trace("the sound " + id + " is not playing");
+			}
 		}
 
 		public function crossFade(fadeOutId:String, fadeInId:String, tweenDuration:Number = 2):void {
